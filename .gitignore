@@ -1,0 +1,28 @@
+# A-Life runtime state (not tracked in Git)
+.task-trees/
+.tier-status/
+.lazy/
+.a-life/
+.worktrees-test/
+
+# Build artifacts
+build/
+*.ttc
+*.ttm
+
+# Idris2 generated
+**/build/
+
+# Temporary files
+bolb.txt
+*.bak
+
+# OS files
+.DS_Store
+*~
+
+# Editor files
+*.swp
+*.swo
+.vscode/
+.idea/

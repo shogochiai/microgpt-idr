@@ -1,0 +1,372 @@
+# MicroGPT-Idris Specification
+# Type-Safe Neural Network and Transformer Implementation in Idris2
+
+[meta]
+name = "MicroGPT-Idris"
+version = "0.2.0"
+description = "Dependently-typed machine learning library inspired by micrograd"
+architecture = "Layered (Core → AutoDiff → Tensor → Layers → Transformer)"
+
+# =============================================================================
+# Core Type System Requirements
+# =============================================================================
+
+[[spec]]
+id = "REQ_CORE_TENSOR"
+category = "core"
+title = "Multi-dimensional tensors with shape-indexed types"
+priority = "critical"
+model = "Tensor"
+api = "Scalar, Vector, Matrix, Tensor3D, Tensor4D"
+tested_by = "Core_Tests"
+
+[[spec]]
+id = "REQ_CORE_DUAL"
+category = "core"
+title = "Dual numbers for forward-mode automatic differentiation"
+priority = "critical"
+model = "Dual"
+api = "MkDual, primal, tangent"
+
+[[spec]]
+id = "REQ_CORE_OP"
+category = "core"
+title = "Computation graph as algebraic data type"
+priority = "high"
+model = "Op"
+api = "Leaf, Add, Mul, Pow, Exp, Log, Tanh, Sigmoid, ReLU"
+
+[[spec]]
+id = "REQ_CORE_SHAPE"
+category = "core"
+title = "Type-level shape representation and validation"
+priority = "high"
+model = "Shape"
+api = "totalElements, sameShape"
+
+[[spec]]
+id = "REQ_AD_FORWARD"
+category = "autodiff"
+title = "Forward-mode AD via dual numbers"
+priority = "high"
+model = "Dual"
+api = "Num, Neg, Fractional instances"
+moduleName = "AutoDiff"
+
+[[spec]]
+id = "REQ_AD_BACKWARD"
+category = "autodiff"
+title = "Reverse-mode AD (backpropagation)"
+priority = "high"
+model = "Value"
+api = "backward, accumGrad, zeroGrad"
+moduleName = "AutoDiff"
+
+[[spec]]
+id = "REQ_AD_POW_GRADIENT"
+category = "autodiff"
+title = "Correct power gradient: d/dx(x^n) = n*x^(n-1)"
+priority = "critical"
+model = "Value"
+api = "pow"
+
+[[spec]]
+id = "REQ_AD_ACTIVATION"
+category = "autodiff"
+title = "Activation functions with correct gradients"
+priority = "high"
+model = "Value"
+api = "relu, leakyReLU, tanh, sigmoid, gelu, swish"
+
+[[spec]]
+id = "REQ_TENSOR_ELEMWISE"
+category = "tensor"
+title = "Element-wise operations (add, mul, div, sub)"
+priority = "high"
+model = "Tensor"
+api = "add, mul, div, sub"
+moduleName = "Tensor"
+
+[[spec]]
+id = "REQ_TENSOR_MATMUL"
+category = "tensor"
+title = "Matrix multiplication with dimension checking"
+priority = "critical"
+model = "Tensor"
+api = "matMul, batchMatMul"
+moduleName = "Tensor"
+
+[[spec]]
+id = "REQ_TENSOR_TRANSPOSE"
+category = "tensor"
+title = "Matrix transposition"
+priority = "high"
+model = "Tensor"
+api = "transpose"
+
+[[spec]]
+id = "REQ_TENSOR_SOFTMAX"
+category = "tensor"
+title = "Numerically stable softmax with correct normalization"
+priority = "critical"
+model = "Tensor"
+api = "softmax, softmaxRows"
+
+[[spec]]
+id = "REQ_TENSOR_REDUCTION"
+category = "tensor"
+title = "Reduction operations (sum, mean, max, min)"
+priority = "high"
+model = "Tensor"
+api = "sum, mean, maximum, minimum"
+
+[[spec]]
+id = "REQ_TENSOR_BROADCAST"
+category = "tensor"
+title = "Broadcasting for shape-compatible operations"
+priority = "medium"
+model = "Tensor"
+api = "broadcast"
+
+[[spec]]
+id = "REQ_LAYER_LINEAR"
+category = "layers"
+title = "Fully-connected linear layer"
+priority = "high"
+model = "Linear"
+api = "mkLinear, forward"
+
+[[spec]]
+id = "REQ_LAYER_EMBEDDING"
+category = "layers"
+title = "Embedding layer for discrete tokens"
+priority = "high"
+model = "Embedding"
+api = "mkEmbedding, embed"
+
+[[spec]]
+id = "REQ_LAYER_LMNORM"
+category = "layers"
+title = "Layer normalization"
+priority = "high"
+model = "LayerNorm"
+api = "layerNorm"
+
+[[spec]]
+id = "REQ_LAYER_BNNORM"
+category = "layers"
+title = "Batch normalization"
+priority = "medium"
+model = "BatchNorm"
+api = "batchNorm"
+
+[[spec]]
+id = "REQ_LAYER_INIT"
+category = "layers"
+title = "Xavier/Glorot weight initialization"
+priority = "high"
+model = "Linear"
+api = "xavierInit, glorotInit"
+
+[[spec]]
+id = "REQ_ATTN_SCALED_DOT"
+category = "transformer"
+title = "Scaled dot-product attention (correct implementation)"
+priority = "critical"
+model = "Attention"
+api = "scaledDotProductAttention"
+
+[[spec]]
+id = "REQ_ATTN_MULTIHEAD"
+category = "transformer"
+title = "Multi-head attention mechanism"
+priority = "high"
+model = "MultiHeadAttention"
+api = "multiHeadAttention"
+
+[[spec]]
+id = "REQ_ATTN_CAUSAL"
+category = "transformer"
+title = "Causal masking for autoregressive generation"
+priority = "high"
+model = "Attention"
+api = "causalMask, maskedAttention"
+
+[[spec]]
+id = "REQ_TRANSFORMER_FFN"
+category = "transformer"
+title = "Feed-forward network with GELU activation"
+priority = "high"
+model = "FeedForward"
+api = "feedForward"
+
+[[spec]]
+id = "REQ_TRANSFORMER_BLOCK"
+category = "transformer"
+title = "Transformer block with residual connections"
+priority = "high"
+model = "TransformerBlock"
+api = "transformerBlock"
+
+[[spec]]
+id = "REQ_TRANSFORMER_POSITIONAL"
+category = "transformer"
+title = "Positional encoding (sinusoidal and learned)"
+priority = "high"
+model = "PositionalEncoding"
+api = "sinusoidalPE, learnedPE"
+
+[[spec]]
+id = "REQ_LOSS_MSE"
+category = "loss"
+title = "Mean Squared Error loss"
+priority = "high"
+model = "Loss"
+api = "mse"
+
+[[spec]]
+id = "REQ_LOSS_MAE"
+category = "loss"
+title = "Mean Absolute Error loss"
+priority = "medium"
+model = "Loss"
+api = "mae"
+
+[[spec]]
+id = "REQ_LOSS_CROSSENT"
+category = "loss"
+title = "Cross-entropy loss (one-hot and integer label versions)"
+priority = "critical"
+model = "Loss"
+api = "crossEntropy, batchCrossEntropy"
+
+[[spec]]
+id = "REQ_LOSS_KL"
+category = "loss"
+title = "KL divergence loss"
+priority = "medium"
+model = "Loss"
+api = "klDivergence"
+
+[[spec]]
+id = "REQ_LOSS_REGULARIZATION"
+category = "loss"
+title = "L1/L2 regularization"
+priority = "medium"
+model = "Loss"
+api = "l1Regularization, l2Regularization"
+
+[[spec]]
+id = "REQ_OPT_SGD"
+category = "optimizer"
+title = "Stochastic Gradient Descent with momentum"
+priority = "high"
+model = "SGD"
+api = "sgdStep, sgdWithMomentum"
+
+[[spec]]
+id = "REQ_OPT_ADAM"
+category = "optimizer"
+title = "Adam optimizer with bias correction"
+priority = "high"
+model = "Adam"
+api = "adamStep"
+
+[[spec]]
+id = "REQ_OPT_ADAMW"
+category = "optimizer"
+title = "AdamW with decoupled weight decay"
+priority = "high"
+model = "AdamW"
+api = "adamWStep"
+
+[[spec]]
+id = "REQ_OPT_RMSPROP"
+category = "optimizer"
+title = "RMSprop optimizer"
+priority = "medium"
+model = "RMSprop"
+api = "rmspropStep"
+
+[[spec]]
+id = "REQ_OPT_SCHEDULER"
+category = "optimizer"
+title = "Learning rate schedulers (step, exponential, cosine, warmup)"
+priority = "medium"
+model = "Scheduler"
+api = "stepLR, exponentialLR, cosineLR, warmupLR"
+
+[[spec]]
+id = "REQ_OPT_CLIP"
+category = "optimizer"
+title = "Gradient clipping (L2 norm and value)"
+priority = "medium"
+model = "Optimizer"
+api = "clipGradNorm, clipGradValue"
+
+[[spec]]
+id = "REQ_TOK_BPE"
+category = "tokenizer"
+title = "Byte Pair Encoding (training and inference)"
+priority = "high"
+model = "BPE"
+api = "trainBPE, encodeBPE, decodeBPE"
+
+[[spec]]
+id = "REQ_TOK_CHAR"
+category = "tokenizer"
+title = "Character-level tokenization"
+priority = "high"
+model = "CharTokenizer"
+api = "encodeChar, decodeChar"
+
+[[spec]]
+id = "REQ_TOK_SPECIAL"
+category = "tokenizer"
+title = "Special tokens (<PAD>, <UNK>, <BOS>, <EOS>)"
+priority = "medium"
+model = "Tokenizer"
+api = "addSpecialToken, getSpecialTokenId"
+
+[[spec]]
+id = "REQ_TOK_PADDING"
+category = "tokenizer"
+title = "Sequence padding"
+priority = "medium"
+model = "Tokenizer"
+api = "padSequence"
+
+[testing]
+convention = "DocCommentReq"  # ||| REQ_XXX + test_XXX : IO Bool
+root_test_module = "Tests.AllTests"
+test_modules = [
+    "Tests.AllTests",
+    "Tests.TestCore",
+    "Tests.TestAutoDiff",
+    "Tests.TestTensor",
+    "Tests.TestLayers",
+    "Tests.TestTransformer",
+    "Tests.TestOptimizer",
+    "Tests.TestTokenizer",
+    "Tests.TestLoss"
+]
+coverage_target = 80
+
+# =============================================================================
+# Critical Bug Fixes (v0.2.0)
+# =============================================================================
+
+[bugfix.FIX_POW_GRADIENT]
+description = "Power gradient was hardcoded to 2.0, now correctly uses n*x^(n-1)"
+priority = "critical"
+fixed_in = "v0.2.0"
+
+[bugfix.FIX_SOFTMAX_NORMALIZATION]
+description = "Softmax denominator was hardcoded to 1.0, now uses sum(exp)"
+priority = "critical"
+fixed_in = "v0.2.0"
+
+[bugfix.FIX_ATTENTION_IDENTITY]
+description = "Attention was identity map, now implements scaled dot-product"
+priority = "critical"
+fixed_in = "v0.2.0"

@@ -1,0 +1,262 @@
+version = "1.0"
+id = "microgpt-full-implementation"
+title = "MicroGPT: README主張への完全実装"
+owner = "developer@example.com"
+created_at = 1739422659
+
+[metadata]
+priority = "high"
+type = "feature"
+
+[root]
+id = "1"
+name = "READMEの主張（GPT実装）に実装を追いつかせる"
+estimate = { hours = 120 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "1.1"
+parent = "1"
+name = "READMEの虚偽表示を修正"
+estimate = { hours = 2 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "1.2"
+parent = "1"
+name = "プロジェクト名を適切なものに変更"
+dependencies = ["1.1"]
+estimate = { minutes = 30 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "2.1"
+parent = "1"
+name = "後方モード自動微分（Backpropagation）実装"
+dependencies = ["1.2"]
+estimate = { hours = 8 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "2.2"
+parent = "1"
+name = "追加演算子の実装（Div, Exp, Log, Tanh, Sigmoid）"
+dependencies = ["2.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "2.3"
+parent = "1"
+name = "スカラー値の完全実装（micrograd互換）"
+dependencies = ["2.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "3.1"
+parent = "1"
+name = "多次元テンソルの型定義"
+dependencies = ["2.3"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "3.2"
+parent = "1"
+name = "テンソル演算の実装"
+dependencies = ["3.1"]
+estimate = { hours = 10 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "3.3"
+parent = "1"
+name = "テンソル用自動微分"
+dependencies = ["3.2"]
+estimate = { hours = 8 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "4.1"
+parent = "1"
+name = "基本レイヤー実装"
+dependencies = ["3.3"]
+estimate = { hours = 8 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "4.2"
+parent = "1"
+name = "パラメータ管理システム"
+dependencies = ["4.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "5.1"
+parent = "1"
+name = "勾配降下法オプティマイザ"
+dependencies = ["4.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "5.2"
+parent = "1"
+name = "発展的オプティマイザ（Adam, Momentum）"
+dependencies = ["5.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "6.1"
+parent = "1"
+name = "回帰用損失関数"
+dependencies = ["5.2"]
+estimate = { hours = 3 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "6.2"
+parent = "1"
+name = "分類用損失関数"
+dependencies = ["6.1"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "7.1"
+parent = "1"
+name = "マルチヘッドアテンション"
+dependencies = ["6.2"]
+estimate = { hours = 12 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "7.2"
+parent = "1"
+name = "正規化・正則化レイヤー"
+dependencies = ["7.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "7.3"
+parent = "1"
+name = "位置エンコーディング"
+dependencies = ["7.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "7.4"
+parent = "1"
+name = "Transformer Decoderブロック"
+dependencies = ["7.3"]
+estimate = { hours = 10 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "8.1"
+parent = "1"
+name = "トークナイゼーション"
+dependencies = ["7.4"]
+estimate = { hours = 8 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "8.2"
+parent = "1"
+name = "埋め込み層"
+dependencies = ["8.1"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "8.3"
+parent = "1"
+name = "言語モデルヘッド"
+dependencies = ["8.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "9.1"
+parent = "1"
+name = "データ処理パイプライン"
+dependencies = ["8.3"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "9.2"
+parent = "1"
+name = "学習ステップ実装"
+dependencies = ["9.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "9.3"
+parent = "1"
+name = "評価機能"
+dependencies = ["9.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "10.1"
+parent = "1"
+name = "デコーディング戦略"
+dependencies = ["9.3"]
+estimate = { hours = 8 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "10.2"
+parent = "1"
+name = "推論最適化"
+dependencies = ["10.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "11.1"
+parent = "1"
+name = "学習済みモデル読み込み"
+dependencies = ["10.2"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "11.2"
+parent = "1"
+name = "動作デモ作成"
+dependencies = ["11.1"]
+estimate = { hours = 8 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "12.1"
+parent = "1"
+name = "ドキュメント整備"
+dependencies = ["11.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "12.2"
+parent = "1"
+name = "テスト・ベンチマーク"
+dependencies = ["12.1"]
+estimate = { hours = 6 }
+checkbox = "unchecked"
+
+[[subtask]]
+id = "12.3"
+parent = "1"
+name = "最終統合テスト"
+dependencies = ["12.2"]
+estimate = { hours = 4 }
+checkbox = "unchecked"

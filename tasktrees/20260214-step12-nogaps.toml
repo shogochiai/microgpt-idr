@@ -1,0 +1,248 @@
+# TaskTree: Achieve NoGaps for lazy core ask --steps=1,2
+# Target: `lazy core ask pkgs/Main/ --steps=1,2` reports NoGaps
+# Created: 2026-02-14
+# Prerequisite: Step 4 coverage improvement completed
+
+[metadata]
+name = "Step 1,2 NoGaps Achievement"
+description = "Ensure SPEC-Test parity and eliminate orphan tests"
+target_command = "lazy core ask pkgs/Main/ --steps=1,2"
+target_result = "NoGaps"
+version = "1.0.0"
+
+[[tasks]]
+id = "1"
+name = "Run Step 1 analysis (SPEC-Test parity)"
+description = "Identify SPEC requirements without corresponding tests"
+status = "pending"
+priority = "critical"
+command = "cd pkgs/Main && lazy core ask . --steps=1 --verbose"
+output_check = "List uncovered SPEC requirements (REQ_XXX without test_XXX)"
+
+[[tasks]]
+id = "2"
+name = "Run Step 2 analysis (Orphan tests)"
+description = "Identify tests without corresponding SPEC requirements"
+status = "pending"
+priority = "critical"
+command = "cd pkgs/Main && lazy core ask . --steps=2 --verbose"
+output_check = "List orphan tests (test_XXX without REQ_XXX)"
+
+[[tasks]]
+id = "3"
+name = "Fix SPEC-Test parity gaps (Step 1)"
+description = "Create missing tests for all SPEC requirements"
+status = "pending"
+priority = "critical"
+dependencies = ["1"]
+
+[[tasks.subtasks]]
+id = "3.1"
+name = "Test REQ_CORE_TENSOR"
+description = "Add test for tensor shape-indexed types"
+spec_requirement = "REQ_CORE_TENSOR"
+test_function = "test_core_tensor_shape_indexed"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.2"
+name = "Test REQ_CORE_DUAL"
+description = "Add test for dual number forward-mode AD"
+spec_requirement = "REQ_CORE_DUAL"
+test_function = "test_core_dual_forward_mode"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.3"
+name = "Test REQ_CORE_OP"
+description = "Add test for computation graph ADT"
+spec_requirement = "REQ_CORE_OP"
+test_function = "test_core_op_computation_graph"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.4"
+name = "Test REQ_AD_POW_GRADIENT (Critical)"
+description = "Add test for correct power gradient: d/dx(x^n) = n*x^(n-1)"
+spec_requirement = "REQ_AD_POW_GRADIENT"
+test_function = "test_pow_gradient"
+status = "pending"
+validation = "Verify gradient for x^3 at x=2 equals 12.0"
+
+[[tasks.subtasks]]
+id = "3.5"
+name = "Test REQ_AD_ACTIVATION"
+description = "Add tests for all activation function gradients"
+spec_requirement = "REQ_AD_ACTIVATION"
+test_functions = ["test_relu_gradient", "test_tanh_gradient", "test_sigmoid_gradient", "test_gelu_gradient", "test_swish_gradient"]
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.6"
+name = "Test REQ_TENSOR_SOFTMAX (Critical)"
+description = "Add test for numerically stable softmax"
+spec_requirement = "REQ_TENSOR_SOFTMAX"
+test_function = "test_softmax_normalization"
+status = "pending"
+validation = "Verify softmax([1,2,3]) sums to 1.0"
+
+[[tasks.subtasks]]
+id = "3.7"
+name = "Test REQ_TENSOR_MATMUL"
+description = "Add test for matrix multiplication dimension checking"
+spec_requirement = "REQ_TENSOR_MATMUL"
+test_function = "test_tensor_matmul_dimensions"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.8"
+name = "Test REQ_ATTN_SCALED_DOT (Critical)"
+description = "Add test for scaled dot-product attention"
+spec_requirement = "REQ_ATTN_SCALED_DOT"
+test_function = "test_attention_scaling"
+status = "pending"
+validation = "Verify attention output shape matches input"
+
+[[tasks.subtasks]]
+id = "3.9"
+name = "Test REQ_LOSS_CROSSENT"
+description = "Add test for cross-entropy loss"
+spec_requirement = "REQ_LOSS_CROSSENT"
+test_function = "test_loss_crossentropy"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.10"
+name = "Test REQ_OPT_ADAM"
+description = "Add test for Adam optimizer with bias correction"
+spec_requirement = "REQ_OPT_ADAM"
+test_function = "test_optimizer_adam"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.11"
+name = "Test REQ_TOK_BPE"
+description = "Add test for BPE tokenization"
+spec_requirement = "REQ_TOK_BPE"
+test_function = "test_tokenizer_bpe"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "3.12"
+name = "Map remaining SPEC requirements"
+description = "Map all remaining REQ_XXX to test functions"
+status = "pending"
+action = "Create test function for each uncovered REQ_XXX"
+
+[[tasks]]
+id = "4"
+name = "Fix orphan tests (Step 2)"
+description = "Either link orphan tests to SPEC or remove them"
+status = "pending"
+priority = "critical"
+dependencies = ["2"]
+
+[[tasks.subtasks]]
+id = "4.1"
+name = "Review orphan test list"
+description = "Examine each orphan test function"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "4.2"
+name = "Link orphans to existing SPEC"
+description = "If test covers a REQ, add DocCommentReq comment"
+status = "pending"
+example = "||| REQ_TENSOR_SOFTMAX\ntest_softmax_basic = ..."
+
+[[tasks.subtasks]]
+id = "4.3"
+name = "Create SPEC for valuable orphans"
+description = "If test is valuable but no REQ exists, add SPEC entry"
+status = "pending"
+action = "Add new [requirements.REQ_XXX] to SPEC.toml"
+
+[[tasks.subtasks]]
+id = "4.4"
+name = "Remove obsolete tests"
+description = "Delete tests that are no longer relevant"
+status = "pending"
+
+[[tasks]]
+id = "5"
+name = "Standardize DocCommentReq format"
+description = "Ensure all tests follow DocCommentReq convention"
+status = "pending"
+priority = "high"
+dependencies = ["3", "4"]
+
+[[tasks.subtasks]]
+id = "5.1"
+name = "Audit test file comments"
+description = "Check all test functions have ||| REQ_XXX comment"
+status = "pending"
+command = "grep -r \"^||| REQ_\" pkgs/Main/src/tests/"
+
+[[tasks.subtasks]]
+id = "5.2"
+name = "Fix missing comments"
+description = "Add ||| REQ_XXX comments where missing"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "5.3"
+name = "Verify test_XXX naming"
+description = "Ensure all test functions start with 'test_'"
+status = "pending"
+
+[[tasks]]
+id = "6"
+name = "Update SPEC.toml tested_by links"
+description = "Ensure all SPEC requirements have tested_by field"
+status = "pending"
+priority = "high"
+dependencies = ["3"]
+filepath = "pkgs/Main/src/SPEC.toml"
+
+[[tasks.subtasks]]
+id = "6.1"
+name = "Add tested_by to critical requirements"
+description = "Link critical bugs to their test functions"
+status = "pending"
+targets = ["FIX_POW_GRADIENT", "FIX_SOFTMAX_NORMALIZATION", "FIX_ATTENTION_IDENTITY"]
+
+[[tasks.subtasks]]
+id = "6.2"
+name = "Complete tested_by for all REQ"
+description = "Every REQ_XXX should have tested_by field"
+status = "pending"
+
+[[tasks]]
+id = "7"
+name = "Verify Step 1 (SPEC-Test parity)"
+description = "Run lazy core ask --steps=1 and confirm NoGaps"
+status = "pending"
+priority = "critical"
+dependencies = ["5", "6"]
+command = "cd pkgs/Main && lazy core ask . --steps=1"
+acceptance_criteria = "Output shows 'NoGaps' or 'SPEC-Test parity: OK'"
+
+[[tasks]]
+id = "8"
+name = "Verify Step 2 (No orphan tests)"
+description = "Run lazy core ask --steps=2 and confirm NoGaps"
+status = "pending"
+priority = "critical"
+dependencies = ["7"]
+command = "cd pkgs/Main && lazy core ask . --steps=2"
+acceptance_criteria = "Output shows 'NoGaps' or 'No orphan tests'"
+
+[[tasks]]
+id = "9"
+name = "Final verification --steps=1,2 combined"
+description = "Run combined check"
+status = "pending"
+priority = "critical"
+dependencies = ["7", "8"]
+command = "cd pkgs/Main && lazy core ask . --steps=1,2"
+acceptance_criteria = "Both steps report NoGaps"

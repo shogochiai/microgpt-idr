@@ -1,0 +1,46 @@
+package micrograd-idr
+
+-- パッケージ名とバージョン
+version = 0.2.0
+
+-- モジュール
+modules = Core
+        , AutoDiff
+        , Tensor
+        , Layers
+        , Optimizer
+        , Loss
+        , Transformer
+        , Tokenizer
+        , Trainer
+        , Generator
+        , Utils
+        , MicroGPT
+        , MicroGradIdris
+        , Tests.AllTests
+        , Core.Tests.Core_Tests
+        , AutoDiff.Tests.AutoDiff_Tests
+        , Tensor.Tests.Tensor_Tests
+        , Layers.Tests.Layers_Tests
+        , Transformer.Tests.Transformer_Tests
+        , Optimizer.Tests.Optimizer_Tests
+        , Tokenizer.Tests.Tokenizer_Tests
+        , Loss.Tests.Loss_Tests
+
+-- 依存関係（標準ライブラリのみ使用）
+-- depends = base >= 0.8.0
+
+-- メインファイル
+main = MicroGPT
+
+-- 実行可能ファイル名
+executable = microgpt_demo
+
+-- ソースディレクトリ
+sourcedir = "pkgs/Main/src"
+
+-- ビルドディレクトリ
+builddir = "build"
+
+-- コンパイラオプション
+-- opts = "-O2"

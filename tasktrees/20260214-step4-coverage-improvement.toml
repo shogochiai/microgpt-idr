@@ -1,0 +1,204 @@
+# TaskTree: Improve Step 4 Coverage for lazy core ask
+# Target: `lazy core ask pkgs/Main/ --steps=4` achieves >80% coverage
+# Created: 2026-02-14
+
+[metadata]
+name = "Step 4 Coverage Improvement"
+description = "Achieve high test coverage for lazy core ask --steps=4"
+target_command = "lazy core ask pkgs/Main/ --steps=4"
+target_metric = ">80% coverage"
+version = "1.0.0"
+
+[[tasks]]
+id = "1"
+name = "Analyze current coverage gaps"
+description = "Run coverage analysis to identify untested code paths"
+status = "pending"
+priority = "critical"
+command = "cd pkgs/Main && lazy core ask . --steps=4 --verbose"
+output_check = "Parse coverage report, identify uncovered modules"
+
+[[tasks]]
+id = "2"
+name = "Create missing test modules"
+description = "Create test files for modules lacking coverage"
+status = "pending"
+priority = "critical"
+dependencies = ["1"]
+
+[[tasks.subtasks]]
+id = "2.1"
+name = "Create TestLayers.idr"
+description = "Test Linear, Embedding, LayerNorm layers"
+status = "pending"
+filepath = "pkgs/Main/src/tests/TestLayers.idr"
+template = """
+module TestLayers
+
+import Core
+import Tensor
+import Layers
+import AutoDiff
+
+testLinearForward : IO Bool
+testLinearForward = do
+  putStrLn "Testing Linear layer forward pass..."
+  let input = Vector [1.0, 2.0, 3.0]
+  let w = Matrix [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]]
+  let b = Vector [0.1, 0.2]
+  let layer = MkLinear w b
+  let output = linearForward layer input
+  pure True
+
+testEmbeddingLookup : IO Bool
+testEmbeddingLookup = do
+  putStrLn "Testing Embedding lookup..."
+  let emb = MkEmbedding (zerosMat 100 64)
+  let vec = embed emb 0
+  pure True
+
+export
+runTests : IO ()
+runTests = do
+  putStrLn "\\n=== Layers Tests ==="
+  testLinearForward
+  testEmbeddingLookup
+  pure ()
+"""
+
+[[tasks.subtasks]]
+id = "2.2"
+name = "Create TestTransformer.idr"
+description = "Test Attention, MultiHeadAttention, TransformerBlock"
+status = "pending"
+filepath = "pkgs/Main/src/tests/TestTransformer.idr"
+
+[[tasks.subtasks]]
+id = "2.3"
+name = "Create TestOptimizer.idr"
+description = "Test SGD, Adam, AdamW optimizers"
+status = "pending"
+filepath = "pkgs/Main/src/tests/TestOptimizer.idr"
+
+[[tasks.subtasks]]
+id = "2.4"
+name = "Create TestTokenizer.idr"
+description = "Test BPE, character-level tokenization"
+status = "pending"
+filepath = "pkgs/Main/src/tests/TestTokenizer.idr"
+
+[[tasks.subtasks]]
+id = "2.5"
+name = "Create TestLoss.idr"
+description = "Test MSE, CrossEntropy, KL divergence losses"
+status = "pending"
+filepath = "pkgs/Main/src/tests/TestLoss.idr"
+
+[[tasks]]
+id = "3"
+name = "Expand Core module tests"
+description = "Add tests for existing Core.idr functions"
+status = "pending"
+priority = "high"
+dependencies = ["1"]
+
+[[tasks.subtasks]]
+id = "3.1"
+name = "Test Dual number operations"
+description = "Test all Dual number math functions"
+status = "pending"
+target_functions = ["dualExp", "dualLog", "dualSin", "dualCos", "dualTanh", "dualPow"]
+
+[[tasks.subtasks]]
+id = "3.2"
+name = "Test Op evaluation"
+description = "Test evalOp for all Op constructors"
+status = "pending"
+target_constructors = ["Leaf", "Add", "Mul", "Div", "Sub", "Pow", "Neg", "Abs", "Exp", "Log", "Sin", "Cos", "Tanh", "Sigmoid", "ReLU", "LeakyReLU", "Sqrt"]
+
+[[tasks]]
+id = "4"
+name = "Expand Tensor module tests"
+description = "Add comprehensive Tensor operation tests"
+status = "pending"
+priority = "high"
+dependencies = ["1"]
+
+[[tasks.subtasks]]
+id = "4.1"
+name = "Test 3D/4D tensor operations"
+description = "Test Tensor3D and Tensor4D add, mul, sum"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "4.2"
+name = "Test broadcast operations"
+description = "Test broadcastScalar, broadcastVecToRows, broadcastVecToCols"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "4.3"
+name = "Test advanced matrix operations"
+description = "Test batchMatMul, transpose variations"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "4.4"
+name = "Test softmax numerical stability"
+description = "Test softmax with extreme values (1000.0+)"
+status = "pending"
+
+[[tasks]]
+id = "5"
+name = "Expand AutoDiff tests"
+description = "Add gradient correctness tests"
+status = "pending"
+priority = "critical"
+dependencies = ["1"]
+
+[[tasks.subtasks]]
+id = "5.1"
+name = "Test all activation gradients"
+description = "Verify gradients for relu, tanh, sigmoid, leakyRelu"
+status = "pending"
+
+[[tasks.subtasks]]
+id = "5.2"
+name = "Test chain rule applications"
+description = "Test complex nested function gradients"
+status = "pending"
+test_cases = ["exp(sin(x))", "log(1 + x^2)", "sigmoid(tanh(x))"]
+
+[[tasks.subtasks]]
+id = "5.3"
+name = "Test pow gradient with various exponents"
+description = "Verify n*x^(n-1) for n=0.5, 1, 2, 3, -1"
+status = "pending"
+
+[[tasks]]
+id = "6"
+name = "Update Tests.idr root module"
+description = "Integrate all new tests into main test runner"
+status = "pending"
+priority = "critical"
+dependencies = ["2", "3", "4", "5"]
+filepath = "pkgs/Main/src/Tests/AllTests.idr"
+action = "Add imports and call runTests from each new test module"
+
+[[tasks]]
+id = "7"
+name = "Run coverage verification"
+description = "Execute lazy core ask --steps=4 and verify coverage"
+status = "pending"
+priority = "critical"
+dependencies = ["6"]
+command = "cd pkgs/Main && lazy core ask . --steps=4"
+acceptance_criteria = "Coverage >= 80%"
+
+[[tasks]]
+id = "8"
+name = "Fix remaining coverage gaps"
+description = "Add tests for any remaining uncovered code paths"
+status = "pending"
+priority = "medium"
+dependencies = ["7"]

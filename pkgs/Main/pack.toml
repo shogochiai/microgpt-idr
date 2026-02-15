@@ -1,0 +1,4 @@
+[custom.all.microgpt-main]
+type = "local"
+path = "."
+ipkg = "../../micrograd-idr.ipkg"
