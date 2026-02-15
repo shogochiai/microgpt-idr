@@ -2,6 +2,11 @@
 
 > Idris2による型安全なニューラルネットワーク・Transformer実装
 
+[![GitHub](https://img.shields.io/badge/GitHub-microgpt--idr-blue?logo=github)](https://github.com/shogochiai/microgpt-idr)
+[![Version](https://img.shields.io/badge/version-0.2.1-green)](https://github.com/shogochiai/microgpt-idr/releases/tag/v0.2.1)
+[![Tests](https://img.shields.io/badge/tests-69%20passing-success)](https://github.com/shogochiai/microgpt-idr)
+[![Quality](https://img.shields.io/badge/lazy%20core%20ask-Step%201%2C2%20OK-brightgreen)](https://github.com/shogochiai/microgpt-idr/blob/main/pkgs/Main/SEMANTIC_REVIEW.md)
+
 ---
 
 ## 📖 概要
